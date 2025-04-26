@@ -42,7 +42,7 @@
       <div class="sidebar-info">
 
         <figure class="avatar-box">
-          <img src=".\assets\images\flag.jpg" alt="Richard hanrick" width="80">
+          <img src=".\assets\images\flag.jpg" alt="sudip shrestha" width="80">
         </figure>
 
         <div class="info-content">
@@ -1159,7 +1159,61 @@
           </figure>
         </section> -->
 
+
+
         <section class="contact-form">
+
+  <h3 class="h3 form-title">Contact Form</h3>
+
+  <form id="contactForm" action="https://formsubmit.co/shresthasudip.tk@gmail.com" method="POST" class="form" data-form>
+
+    <!-- Hidden inputs -->
+    <input type="hidden" name="_captcha" value="false">
+
+    <div class="input-wrapper">
+      <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
+
+      <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+    </div>
+
+    <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
+
+    <button class="form-btn" type="submit" data-form-btn>
+      <ion-icon name="paper-plane"></ion-icon>
+      <span>Send Message</span>
+    </button>
+
+  </form>
+
+  <div id="messageSent" style="display: none; color: green; margin-top: 1em; text-align: center;">
+    ✅ Your message has been sent. I'll contact you shortly!
+  </div>
+
+</section>
+
+<script>
+  const form = document.getElementById("contactForm");
+  const messageBox = document.getElementById("messageSent");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+    }).then(response => {
+      if (response.ok) {
+        form.reset();
+        messageBox.style.display = "block";
+      } else {
+        alert("Something went wrong!");
+      }
+    });
+  });
+</script>
+
+
+<!--         <section class="contact-form">
 
           <h3 class="h3 form-title">Contact Form</h3>
 
@@ -1180,7 +1234,7 @@
 
           </form>
 
-        </section>
+        </section> -->
 
       </article>
 
