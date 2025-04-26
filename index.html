@@ -1159,11 +1159,14 @@
           </figure>
         </section> -->
 
-        <section class="contact-form">
+     <section class="contact-form">
 
           <h3 class="h3 form-title">Contact Form</h3>
 
-          <form action="#" class="form" data-form>
+          <form id="contactForm" action="https://formsubmit.co/shresthasudip.class11@EMAIL.com" method="POST" class="form" data-form>
+
+            <!-- Hidden inputs -->
+            <input type="hidden" name="_captcha" value="false">
 
             <div class="input-wrapper">
               <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
@@ -1177,6 +1180,10 @@
               <ion-icon name="paper-plane"></ion-icon>
               <span>Send Message</span>
             </button>
+
+            <div id="messageSent" style="display: none; color: green; margin-top: 1em; text-align: center;">
+              ✅ Your message has been sent. We'll contact you shortly!
+            </div>
 
           </form>
 
