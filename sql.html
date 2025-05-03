@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SQL Journey - Lesson 1 & 2</title>
+  <meta name="description" content="SQL tutorial covering SELECT, DISTINCT, LIMIT and data basics.">
+  <meta name="keywords" content="SQL, database, SELECT, DISTINCT, LIMIT, tutorial">
+  <meta name="author" content="Your Name">
+  <style>
+    body {
+      font-family: sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: auto;
+      padding: 2em;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    pre.code {
+      background: #f4f4f4;
+      border-left: 4px solid #007acc;
+      padding: 1em;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+  </style>
+  <nav id="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#lesson-1">Lesson 1: Introduction to Databases</a></li>
+      <li><a href="#lesson-2">Lesson 2: SELECT Basics</a></li>
+      <li><a href="#lesson-3">Lesson 3: Sorting Retrieved Data</a></li>
+      <li><a href="#lesson-4">Lesson 4: Filtering Data</a></li>
+      <li><a href="#lesson-5">Lesson 5: Advanced Data Filtering</a></li>
+      <li><a href="#lesson-6">Lesson 6: Using Wildcard Filtering</a></li>
+      <li><a href="#lesson-7">Lesson 7: Creating Calculated Fields</a></li>
+      <li><a href="#lesson-8">Lesson 8: Using Data Manipulation Functions</a></li>
+      <li><a href="#lesson-9">Lesson 9: Creating Calculated Fields</a></li>
+      <li><a href="#lesson-10">Lesson 10: Grouping Data</a></li>
+      <li><a href="#lesson-11">Lesson 11: Working with Subqueries</a></li>
+      
+    </ul>
+  </nav>
+  
+
+</head>
+<body>
+    <h1>SQL Journey - Lesson 1 & 2</h1>
+  
+    <h2 id="lesson-1">Lesson 1</h2>
+    <p><strong>Database</strong><br>
+    A container (usually a file or set of files) to store organized data.</p>
+  
+    <p><strong>Table</strong><br>
+    A structured list of data of a specific type.</p>
+  
+    <p><strong>Schema</strong><br>
+    Information about database and table layout and properties.</p>
+  
+    <p><strong>Column</strong><br>
+    A single field in a table. All tables are made up of one or more columns.</p>
+  
+    <p><strong>Tip: Breaking Up Data</strong><br>
+    It's important to break data into multiple columns correctly (e.g., city, state, ZIP). If combined, sorting/filtering becomes hard. Choose granularity based on needs. For example, house number and street name are usually kept together unless you need to sort by street name.</p>
+  
+    <p><strong>Datatype</strong><br>
+    The kind of data allowed in a column, restricting or permitting specific values.</p>
+  
+    <p><strong>Row</strong><br>
+    A record in a table. Though “record” and “row” are interchangeable, “row” is more technically correct.</p>
+  
+    <p><strong>Primary key</strong><br>
+    A column (or set of columns) that uniquely identifies every row in a table.</p>
+  
+    <p><strong>Tip: Always Define Primary Keys</strong><br>
+    Primary keys are optional but recommended for reliable data manipulation and maintenance.</p>
+  
+    <ul>
+      <li>No duplicate primary key values.</li>
+      <li>Primary key columns cannot be NULL.</li>
+      <li>Values shouldn’t be changed or reused.</li>
+    </ul>
+  
+    <p>Primary keys can consist of multiple columns. Together, their values must be unique.</p>
+  
+    <p><strong>What is SQL?</strong><br>
+    SQL (Structured Query Language) is used to communicate with databases. It is simple but powerful, supported by most DBMS, and uses a small number of keywords.</p>
+  
+    <h2 id="lesson-2">Lesson 2</h2>
+    <p>This lesson introduces the SELECT statement to retrieve one or more columns of data from a table.</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT prod_name
+  FROM Products;</code></pre>
+  
+    <h3>Output</h3>
+    <pre class="code"><code>prod_name
+  Fish bean bag toy
+  Bird bean bag toy
+  Rabbit bean bag toy
+  8 inch teddy bear
+  12 inch teddy bear
+  18 inch teddy bear
+  Raggedy Ann
+  King doll
+  Queen doll</code></pre>
+  
+    <p><strong>Tip: Terminating Statements</strong><br>
+    Multiple SQL statements should be separated by semicolons. Some DBMS require it; others don't. Adding it won't hurt.</p>
+  
+    <p><strong>Tip: SQL Case Sensitivity</strong><br>
+    SQL keywords are case-insensitive. Best practice: use uppercase for SQL and lowercase for names.</p>
+  
+    <p><strong>Tip: Use of White Space</strong><br>
+    White space is ignored. You can write SQL on one line or many. Example:</p>
+  
+    <pre class="code"><code>SELECT prod_name FROM Products;
+  SELECT
+  prod_name
+  FROM
+  Products;</code></pre>
+  
+    <p>To retrieve multiple columns:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT prod_id, prod_name, prod_price
+  FROM Products;</code></pre>
+  
+    <p><strong>Tip: Take Care with Commas</strong><br>
+    Use commas between column names, but not after the last column name.</p>
+  
+    <p><strong>Note: Presentation of Data</strong><br>
+    SQL returns raw, unformatted data. Formatting is handled by the application layer, not SQL.</p>
+  
+    <p>To retrieve all columns:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT *
+  FROM Products;</code></pre>
+  
+    <p><strong>Caution: Using Wildcards</strong><br>
+    Using * to select all columns may reduce performance.</p>
+  
+    <p>To get distinct rows:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT vend_id
+  FROM Products;</code></pre>
+  
+    <h3>Output</h3>
+    <pre class="code"><code>vend_id
+  BRS01
+  BRS01
+  BRS01
+  DLL01
+  DLL01
+  DLL01
+  DLL01
+  FNG01
+  FNG01</code></pre>
+  
+    <p>To eliminate duplicates:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT DISTINCT vend_id
+  FROM Products;</code></pre>
+  
+    <h3>Output</h3>
+    <pre class="code"><code>vend_id
+  BRS01
+  DLL01
+  FNG01</code></pre>
+  
+    <p><strong>Caution: Can’t Be Partially DISTINCT</strong><br>
+    DISTINCT applies to all selected columns, not just the first one.</p>
+  
+    <p>To limit rows:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT prod_name
+  FROM Products
+  LIMIT 5;</code></pre>
+  
+    <p>To skip rows and limit count:</p>
+  
+    <h3>Input</h3>
+    <pre class="code"><code>SELECT prod_name
+  FROM Products
+  LIMIT 5 OFFSET 5;</code></pre>
+  
+    <h3>Output</h3>
+    <pre class="code"><code>prod_name
+  Rabbit bean bag toy
+  Raggedy Ann
+  King doll
+  Queen doll</code></pre>
+  
+    <p><strong>Analysis</strong><br>
+    LIMIT 5 OFFSET 5 skips the first 5 rows and returns the next 5. Only 4 rows are returned here because the table had 9 products.</p>
+  
+    <p><strong>Caution: Row 0</strong><br>
+    The first row is row 0, not row 1. So OFFSET 1 gets the second row.</p>
+  
+    <p><strong>Tip: MySQL & MariaDB Shortcut</strong><br>
+    You can write LIMIT 4 OFFSET 3 as LIMIT 3,4 in these databases.</p>
+
+
+        <h2 id="lesson-3">Lesson 3: Sorting Retrieved Data</h2>
+      
+        <p>In this lesson, you will learn how to use the SELECT statement’s ORDER BY clause to sort retrieved data as needed.</p>
+      
+        <p>By default, SQL does not guarantee any specific order of returned rows. To control order, you must use ORDER BY.</p>
+      
+        <h3>Input</h3>
+        <pre class="code"><code>SELECT prod_name
+      FROM Products
+      ORDER BY prod_name;</code></pre>
+      
+        <p><strong>Analysis</strong><br>
+        This statement sorts results by the prod_name column. Without ORDER BY, the order of results is unpredictable.</p>
+      
+        <p><strong>Caution: Position of ORDER BY Clause</strong><br>
+        ORDER BY must be the last clause in a SELECT statement. Placing it elsewhere will cause errors.</p>
+      
+        <p><strong>Tip: Sorting by Nonselected Columns</strong><br>
+        You can sort by columns that are not included in the SELECT list.</p>
+      
+        <h3>Sorting by Multiple Columns</h3>
+        <p>You can sort by more than one column. For example, by price and then by name.</p>
+      
+        <h3>Input</h3>
+        <pre class="code"><code>SELECT prod_id, prod_price, prod_name
+      FROM Products
+      ORDER BY prod_price, prod_name;</code></pre>
+      
+        <h3>Output</h3>
+        <pre class="code"><code>prod_id     prod_price     prod_name
+      BNBG02      3.49           Bird bean bag toy
+      BNBG01      3.49           Fish bean bag toy
+      BNBG03      3.49           Rabbit bean bag toy
+      RGAN01      4.99           Raggedy Ann
+      BR01        5.99           8 inch teddy bear
+      BR02        8.99           12 inch teddy bear
+      RYL01       9.49           King doll
+      RYL02       9.49           Queen doll
+      BR03        11.99          18 inch teddy bear</code></pre>
+      
+        <h3>Sorting by Column Position</h3>
+        <p>You can also sort using the position of columns in the SELECT list instead of column names.</p>
+      
+        <h3>Input</h3>
+        <pre class="code"><code>SELECT prod_id, prod_price, prod_name
+      FROM Products
+      ORDER BY 2, 3;</code></pre>
+      
+        <h3>Output</h3>
+        <pre class="code"><code>(Same as previous output)</code></pre>
+      
+        <p><strong>Analysis</strong><br>
+        ORDER BY 2 sorts by the second column (prod_price), and ORDER BY 2, 3 sorts by price then name. This can be risky if column positions change.</p>
+      
+        <p>⚠️ Downsides of using column positions:</p>
+        <ul>
+          <li>Higher risk of mistakes if columns are rearranged</li>
+          <li>Not usable if the column isn’t in SELECT</li>
+        </ul>
+      
+        <h3>Specifying Sort Direction</h3>
+        <p>By default, sorting is ascending (A–Z). To sort in descending order (Z–A), use the DESC keyword.</p>
+      
+        <h3>Input</h3>
+        <pre class="code"><code>SELECT prod_id, prod_price, prod_name
+      FROM Products
+      ORDER BY prod_price DESC;</code></pre>
+      
+        <h3>Output</h3>
+        <pre class="code"><code>prod_id     prod_price     prod_name
+      BR03        11.99          18 inch teddy bear
+      RYL01       9.49           King doll
+      RYL02       9.49           Queen doll
+      BR02        8.99           12 inch teddy bear
+      BR01        5.99           8 inch teddy bear
+      RGAN01      4.99           Raggedy Ann</code></pre>
+      
+        <p>Sorting by multiple columns in descending order:</p>
+      
+        <h3>Input</h3>
+        <pre class="code"><code>SELECT prod_id, prod_price, prod_name
+      FROM Products
+      ORDER BY prod_price DESC, prod_name;</code></pre>
+      
+        <p><strong>Note:</strong> DESC is short for DESCENDING. ASC (or ASCENDING) is rarely needed because it's the default.</p>
+      
+        <p><strong>Tip: Case-Sensitivity and Sort Orders</strong><br>
+        When sorting text, whether A = a depends on database collation. Most DBMSs treat A and a the same by default, but this can be configured. If you need a special sort order (e.g., for non-English characters), ORDER BY might not be enough, and you'll need DBA help.</p>
+        
+            <h2 id="lesson-4">Lesson 4: Filtering Data</h2>
+          
+            <p>In this lesson, you will learn how to use the SELECT statement’s WHERE clause to specify search conditions.</p>
+          
+            <h3>Using the WHERE Clause</h3>
+            <p>Database tables usually contain large amounts of data, but you seldom need to retrieve all the rows. More often, you'll want a subset of the data for a specific task. You define this using the WHERE clause, placed after the FROM clause.</p>
+          
+            <h3>Input</h3>
+            <pre class="code"><code>SELECT prod_name, prod_price
+          FROM Products
+          WHERE prod_price = 3.49;</code></pre>
+          
+            <p><strong>Analysis</strong><br>
+            This query returns only the rows where prod_price is 3.49.</p>
+          
+            <h3>Output</h3>
+            <pre class="code"><code>prod_name              prod_price
+          Fish bean bag toy      3.49
+          Bird bean bag toy      3.49
+          Rabbit bean bag toy    3.49</code></pre>
+          
+            <p><strong>Tip: SQL vs Application Filtering</strong><br>
+            Although filtering can be done in the application layer, it's best done in SQL. Filtering in code causes performance issues and network overhead. Let the database do the filtering.</p>
+          
+            <p><strong>Caution: WHERE Clause Position</strong><br>
+            If you're using both WHERE and ORDER BY, make sure WHERE comes first.</p>
+          
+            <h3>Checking for Nonmatches</h3>
+          
+            <h3>Input</h3>
+            <pre class="code"><code>SELECT vend_id, prod_name
+          FROM Products
+          WHERE vend_id &lt;&gt; 'DLL01';</code></pre>
+          
+            <p><strong>Tip: When to Use Quotes</strong><br>
+            Use single quotes around string values (like vendor IDs). Do not quote numeric values.</p>
+          
+            <h3>Checking for a Range of Values</h3>
+          
+            <h3>Input</h3>
+            <pre class="code"><code>SELECT prod_name, prod_price
+          FROM Products
+          WHERE prod_price BETWEEN 5 AND 10;</code></pre>
+          
+            <h3>Output</h3>
+            <pre class="code"><code>prod_name              prod_price
+          8 inch teddy bear      5.99
+          12 inch teddy bear     8.99
+          King doll              9.49
+          Queen doll             9.49</code></pre>
+          
+            <p><strong>Analysis</strong><br>
+            BETWEEN requires two values and includes both ends of the range.</p>
+          
+            <h3>Checking for NULL Values</h3>
+          
+            <h3>Input</h3>
+            <pre class="code"><code>SELECT prod_name
+          FROM Products
+          WHERE prod_price IS NULL;</code></pre>
+          
+            <p><strong>Caution: NULL and Non-matches</strong><br>
+            NULLs do not behave like regular values. A condition like "WHERE column &lt;&gt; value" will not include rows where the column is NULL. Always check NULL handling carefully.</p>
+          
+            <h3>Summary</h3>
+            <p>In this lesson, you learned how to use the WHERE clause to filter data by equality, inequality, ranges, and NULL values.</p>
+          
+        
+                <h2 id="lesson-5">Lesson 5: Advanced Data Filtering</h2>
+              
+                <p>In this lesson, you’ll learn how to combine WHERE clauses to create powerful and sophisticated search conditions. You’ll also learn how to use the NOT and IN operators.</p>
+              
+                <h3>Combining WHERE Clauses</h3>
+                <p>Until now, you’ve filtered using a single condition. SQL allows combining multiple conditions using AND or OR operators.</p>
+              
+                <p><strong>Operator:</strong> A special keyword used to join or alter clauses in a WHERE clause (e.g., AND, OR).</p>
+              
+                <h3>Using the AND Operator</h3>
+              
+                <h4>Input</h4>
+                <pre class="code"><code>SELECT prod_id, prod_price, prod_name
+              FROM Products
+              WHERE vend_id = 'DLL01' AND prod_price <= 4;</code></pre>
+              
+                <p><strong>Analysis</strong><br>
+                This returns products from vendor DLL01 with a price less than or equal to $4. Both conditions must be true for a row to be included.</p>
+              
+                <p><strong>AND:</strong> Returns rows matching all specified conditions.</p>
+              
+                <h3>Using the OR Operator</h3>
+              
+                <h4>Input</h4>
+                <pre class="code"><code>SELECT prod_name, prod_price
+              FROM Products
+              WHERE vend_id = 'DLL01' OR vend_id = 'BRS01';</code></pre>
+              
+                <p><strong>Analysis</strong><br>
+                This returns products from either DLL01 or BRS01. Only one condition needs to match for inclusion.</p>
+              
+                <h4>Output</h4>
+                <pre class="code"><code>prod_name              prod_price
+              Fish bean bag toy      3.49
+              Bird bean bag toy      3.49
+              Rabbit bean bag toy    3.49
+              8 inch teddy bear      5.99
+              12 inch teddy bear     8.99
+              18 inch teddy bear     11.99
+              Raggedy Ann            4.99</code></pre>
+              
+                <p><strong>OR:</strong> Returns rows matching any of the specified conditions.</p>
+              
+                <h3>Understanding Order of Evaluation</h3>
+                <p>SQL evaluates AND before OR. Misplaced conditions can produce unexpected results. Use parentheses to control logic.</p>
+              
+                <h4>Incorrect Input</h4>
+                <pre class="code"><code>SELECT prod_name, prod_price
+              FROM Products
+              WHERE vend_id = 'DLL01' OR vend_id = 'BRS01'
+              AND prod_price >= 10;</code></pre>
+              
+                <h4>Output</h4>
+                <pre class="code"><code>prod_name              prod_price
+              Fish bean bag toy      3.49
+              Bird bean bag toy      3.49
+              Rabbit bean bag toy    3.49
+              18 inch teddy bear     11.99
+              Raggedy Ann            4.99</code></pre>
+              
+                <p><strong>Analysis</strong><br>
+                The AND takes precedence, so this returns all DLL01 products (any price) and BRS01 products with price ≥ 10. This is likely not what was intended.</p>
+              
+                <h4>Corrected Input</h4>
+                <pre class="code"><code>SELECT prod_name, prod_price
+              FROM Products
+              WHERE (vend_id = 'DLL01' OR vend_id = 'BRS01')
+              AND prod_price >= 10;</code></pre>
+              
+                <h4>Output</h4>
+                <pre class="code"><code>prod_name              prod_price
+              18 inch teddy bear     11.99</code></pre>
+              
+                <p><strong>Tip: Using Parentheses in WHERE Clauses</strong><br>
+                Always use parentheses when mixing AND and OR conditions. It avoids ambiguity and logical mistakes.</p>
+              
+                <h3>Using the IN Operator</h3>
+              
+                <h4>Input</h4>
+                <pre class="code"><code>SELECT prod_name, prod_price
+              FROM Products
+              WHERE vend_id IN ('DLL01', 'BRS01')
+              ORDER BY prod_name;</code></pre>
+              
+                <h4>Output</h4>
+                <pre class="code"><code>prod_name              prod_price
+              12 inch teddy bear     8.99
+              18 inch teddy bear     11.99
+              8 inch teddy bear      5.99
+              Bird bean bag toy      3.49
+              Fish bean bag toy      3.49
+              Rabbit bean bag toy    3.49
+              Raggedy Ann            4.99</code></pre>
+              
+                <p><strong>Analysis</strong><br>
+                IN is a cleaner, more efficient alternative to multiple OR statements.</p>
+              
+                <p><strong>Why use IN?</strong></p>
+                <ul>
+                  <li>Cleaner syntax with long lists</li>
+                  <li>Better control when combining with AND/OR</li>
+                  <li>Typically faster than multiple ORs</li>
+                  <li>Can be combined with subqueries</li>
+                </ul>
+              
+                <h3>Using the NOT Operator</h3>
+              
+                <h4>Input</h4>
+                <pre class="code"><code>SELECT prod_name
+              FROM Products
+              WHERE NOT vend_id = 'DLL01'
+              ORDER BY prod_name;</code></pre>
+              
+                <p><strong>Analysis</strong><br>
+                NOT negates the condition following it. Here, it returns all rows where vend_id is not DLL01.</p>
+              
+                <p><strong>Why use NOT?</strong><br>
+                While basic use cases don’t benefit much, NOT is powerful when combined with IN, BETWEEN, or EXISTS.</p>
+              
+                <p><strong>Note: NOT in MariaDB</strong><br>
+                MariaDB supports NOT with IN, BETWEEN, and EXISTS. Some DBMSs may limit this to just a few clause types.</p>
+              
+                <h3>Summary</h3>
+                <p>This lesson taught how to combine WHERE clauses using AND, OR, and NOT, and how to control logic with parentheses. You also learned the use and advantages of the IN operator.</p>
+            
+                
+                    <h2 id="lesson-6">Lesson 6: Using Wildcard Filtering</h2>
+                  
+                    <p>In this lesson, you’ll learn what wildcards are, how they are used, and how to perform wildcard searches using the LIKE operator for more flexible filtering.</p>
+                  
+                    <h3>Using the LIKE Operator</h3>
+                    <p>Previous filtering methods used known values — matching exact values or ranges. But sometimes, you want to find partial matches, such as all products containing the phrase "bean bag". This is where wildcard searching helps.</p>
+                  
+                    <p><strong>Wildcards:</strong> Special characters used to match parts of a value.</p>
+                    <p><strong>Search pattern:</strong> A search condition using literal text, wildcard characters, or both.</p>
+                  
+                    <p>To use wildcards, you must use the <code>LIKE</code> operator. LIKE tells the database to perform a pattern match, not just a direct comparison.</p>
+                  
+                    <h3>The Percent Sign (%) Wildcard</h3>
+                    <p>The percent sign (%) matches any number of characters. For example, to find all products starting with the word “Fish”:</p>
+                  
+                    <h4>Input</h4>
+                    <pre class="code"><code>SELECT prod_id, prod_name
+                  FROM Products
+                  WHERE prod_name LIKE 'Fish%';</code></pre>
+                  
+                    <p><strong>Analysis:</strong><br>
+                    This retrieves any value that starts with “Fish”. The percent sign (%) matches any trailing characters.</p>
+                  
+                    <h3>The Underscore (_) Wildcard</h3>
+                    <p>The underscore (_) matches exactly one character. For example, to match "12 inch teddy bear" or "18 inch teddy bear":</p>
+                  
+                    <h4>Input</h4>
+                    <pre class="code"><code>SELECT prod_id, prod_name
+                  FROM Products
+                  WHERE prod_name LIKE '__ inch teddy bear';</code></pre>
+                  
+                    <p>This matches any product name where the first two characters can be anything, followed by " inch teddy bear".</p>
+                  
+                    <h3>The Brackets ([]) Wildcard</h3>
+                    <p>The brackets wildcard allows you to specify a list or range of characters to match at a specific position in the string. Example syntax:</p>
+                    <pre class="code"><code>WHERE prod_name LIKE '[FBR]%'</code></pre>
+                    <p>This matches any product name starting with F, B, or R.</p>
+                  
+                    <h3>Tips for Using Wildcards</h3>
+                    <ul>
+                      <li>✅ Use wildcards only when necessary; they are slower than exact match filters.</li>
+                      <li>⚠️ Avoid starting patterns with a wildcard unless needed — these are the slowest to process.</li>
+                      <li>🎯 Be precise — misplaced wildcards can lead to incorrect results.</li>
+                    </ul>
+                  
+                    <p>Used wisely, wildcards are a powerful part of your SQL toolkit.</p>
+                  
+                    <h3>Summary</h3>
+                    <p>In this lesson, you learned how to use SQL wildcards — %, _, and [] — in WHERE clauses with the LIKE operator. While powerful, wildcards should be used with care for performance and accuracy.</p>
+                  
+                  
+              
+                   
+                        <h2 id="lesson-7">Lesson 7: Creating Calculated Fields</h2>
+                      
+                        <h3>Understanding Calculated Fields</h3>
+                        <p>Data in a database is not always in the exact format your application needs. Common examples include:</p>
+                        <ul>
+                          <li>Combining company name and location from separate fields</li>
+                          <li>Formatting address lines by joining city, state, and ZIP</li>
+                          <li>Changing case (e.g., all uppercase)</li>
+                          <li>Computing total prices from quantity × item_price</li>
+                          <li>Performing totals, averages, or calculations directly in queries</li>
+                        </ul>
+                      
+                        <p>Rather than reformat data in the application, you can retrieve calculated or reformatted values directly from SQL queries using <strong>calculated fields</strong>.</p>
+                      
+                        <p>Calculated fields don’t exist in the table—they are created on-the-fly using expressions inside the <code>SELECT</code> statement.</p>
+                      
+                        <p><strong>Concatenate:</strong> Joining values together (appending them) into one combined value.</p>
+                      
+                        <p>To concatenate fields in SQL, you use:</p>
+                        <ul>
+                          <li><code>+</code> or <code>||</code> in many databases</li>
+                          <li><code>CONCAT()</code> in MySQL or MariaDB</li>
+                        </ul>
+                      
+                        <p>The <code>RTRIM()</code> function can be used to trim trailing spaces for cleaner output.</p>
+                      
+                        <h3>Using Aliases</h3>
+                        <p>Calculated fields do not have a name by default. To make them usable in client applications, assign them a name using the <code>AS</code> keyword.</p>
+                      
+                        <p><strong>Tip: Other Uses for Aliases</strong><br>
+                        Aliases are useful for renaming columns with special characters, making column names more readable, or resolving ambiguity in joins.</p>
+                      
+                        <h3>Performing Mathematical Calculations</h3>
+                      
+                        <h4>Input</h4>
+                        <pre class="code"><code>SELECT prod_id,
+                             quantity,
+                             item_price,
+                             quantity * item_price AS expanded_price
+                      FROM OrderItems
+                      WHERE order_num = 20008;</code></pre>
+                      
+                        <h4>Output</h4>
+                        <pre class="code"><code>prod_id   quantity   item_price   expanded_price
+                      RGAN01    5          4.9900       24.9500
+                      BR03      5          11.9900      59.9500
+                      BNBG01    10         3.4900       34.9000
+                      BNBG02    10         3.4900       34.9000</code></pre>
+                      
+                        <p><strong>Analysis</strong><br>
+                        The <code>expanded_price</code> column is calculated using <code>quantity * item_price</code>. It behaves like any regular column in output and can be used in reports, exports, or applications.</p>
+                      
+                        <h3>Summary</h3>
+                        <p>In this lesson, you learned how to create calculated fields in SQL for string concatenation and math. You also saw how to use aliases to name these fields for easier use in applications.</p>
+                      
+                      
+      
+                        
+                            <h2 id="lesson-8">Lesson 8: Using Data Manipulation Functions</h2>
+                          
+                            <h3>Understanding Functions</h3>
+                            <p>In this lesson, you’ll learn what functions are, the types of functions supported by SQL DBMSs, and the advantages and challenges of using them effectively.</p>
+                          
+                            <p><strong>Functions</strong> are built-in operations provided by SQL databases to transform or analyze data values within queries.</p>
+                          
+                            <h3>Types of SQL Functions</h3>
+                            <ul>
+                              <li><strong>Text functions</strong>: Manipulate string values (e.g., trimming, padding, case conversion)</li>
+                              <li><strong>Numeric functions</strong>: Perform math operations on numeric data (e.g., absolute value, rounding)</li>
+                              <li><strong>Date and time functions</strong>: Handle date/time values, extract parts, or calculate differences</li>
+                              <li><strong>System functions</strong>: Return info about the DBMS or session (e.g., current user, server time)</li>
+                            </ul>
+                          
+                            <h3>Text Manipulation Functions</h3>
+                            <p>In Lesson 7, we used <code>RTRIM()</code> to remove trailing white space. Here's another example using <code>UPPER()</code> to convert text to uppercase:</p>
+                          
+                            <h4>Input</h4>
+                            <pre class="code"><code>SELECT prod_name, UPPER(prod_name) AS uppercase_name
+                          FROM Products;</code></pre>
+                          
+                            <p>This query returns the product name in its original form and in uppercase.</p>
+                          
+                            <h3>Date and Time Manipulation Functions</h3>
+                            <p>Dates and times are stored in special formats depending on the DBMS. SQL provides powerful functions to work with these values, such as extracting year, calculating differences, and formatting output.</p>
+                          
+                            <p>However, date and time functions are the least standardized — each DBMS handles them differently.</p>
+                          
+                            <p>Here's an example that retrieves all orders made in the year 2012 using SQL Server:</p>
+                          
+                            <h4>Input</h4>
+                            <pre class="code"><code>SELECT order_num, order_date
+                          FROM Orders
+                          WHERE YEAR(order_date) = 2012;</code></pre>
+                          
+                            <p>This query extracts the year from each <code>order_date</code> and filters those equal to 2012.</p>
+                          
+                            <h3>Summary</h3>
+                            <p>In this lesson, you learned how to use SQL functions to manipulate data:</p>
+                            <ul>
+                              <li>Text functions like <code>UPPER()</code> and <code>RTRIM()</code></li>
+                              <li>Date and time functions like <code>YEAR()</code></li>
+                              <li>SQL functions are powerful but can vary across DBMSs — always test on your specific platform</li>
+                            </ul>
+
+                            <h2 id="lesson-9">Lesson 9. Summarizing Data</h2>
+
+<p>It is often necessary to summarize data without actually retrieving it all, and SQL provides special functions for this purpose. Using these functions, SQL queries are often used to retrieve data for analysis and reporting purposes.</p>
+
+<p>Examples of this type of retrieval are:</p>
+<ul>
+  <li>Determining the number of rows in a table (or the number of rows that meet some condition or contain a specific value).</li>
+  <li>Obtaining the sum of a set of rows in a table.</li>
+  <li>Finding the highest, lowest, and average values in a table column (either for all rows or for specific rows).</li>
+</ul>
+
+<p>In each of these examples, you want a summary of the data in a table, not the actual data itself. Therefore, returning the actual table data would be a waste of time and processing resources (not to mention bandwidth). To repeat, all you really want is the summary information.</p>
+
+<p>To facilitate this type of retrieval, SQL features a set of five aggregate functions:</p>
+
+<table border="1">
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>AVG()</td><td>Return a column's average value</td></tr>
+    <tr><td>COUNT()</td><td>Return the number of rows in a column</td></tr>
+    <tr><td>MAX()</td><td>Return a column's highest value</td></tr>
+    <tr><td>MIN()</td><td>Return a column's lowest value</td></tr>
+    <tr><td>SUM()</td><td>Return the sum of a column's values</td></tr>
+  </tbody>
+</table>
+
+<h3>The AVG() Function</h3>
+<p>AVG() is used to return the average value of a specific column by counting both the number of rows in the table and the sum of their values. AVG() can be used to return the average value of all columns or of specific columns or rows.</p>
+
+<h4>Individual Columns Only</h4>
+<p>AVG() may only be used to determine the average of a specific numeric column, and that column name must be specified as the function parameter. To obtain the average value of multiple columns, multiple AVG() functions must be used.</p>
+
+<h3>The COUNT() Function</h3>
+<p>COUNT() does just that: It counts. Using COUNT(), you can determine the number of rows in a table or the number of rows that match a specific criterion.</p>
+<p>COUNT() can be used two ways:</p>
+<ul>
+  <li>Use <code>COUNT(*)</code> to count the number of rows in a table, whether columns contain values or NULL values.</li>
+  <li>Use <code>COUNT(column)</code> to count the number of rows that have values in a specific column, ignoring NULL values.</li>
+</ul>
+
+<h4>NOTE: NULL Values</h4>
+<p>Column rows with NULL values in them are ignored by the COUNT() function if a column name is specified, but not if the asterisk (*) is used.</p>
+
+<h3>The MAX() Function</h3>
+<p>MAX() returns the highest value in a specified column. MAX() requires that the column name be specified.</p>
+
+<h4>TIP: Using MAX() with Non-Numeric Data</h4>
+<p>Although MAX() is usually used to find the highest numeric or date values, many (but not all) DBMSs allow it to be used to return the highest value in any columns including textual columns. When used with textual data, MAX() returns the row that would be the last if the data were sorted by that column.</p>
+
+<h4>Note: NULL Values</h4>
+<p>Column rows with NULL values in them are ignored by the MAX() function.</p>
+
+<h3>The MIN() Function</h3>
+<p>MIN() does the exact opposite of MAX(); it returns the lowest value in a specified column. Like MAX(), MIN() requires that the column name be specified.</p>
+
+<h3>The SUM() Function</h3>
+<p>SUM() is used to return the sum (total) of the values in a specific column.</p>
+<p>Here is an example to demonstrate this. The <code>OrderItems</code> table contains the actual items in an order, and each item has an associated quantity. The total number of items ordered (the sum of all the quantity values) can be retrieved:</p>
+
+<h4>Input</h4>
+<pre><code>SELECT SUM(quantity) AS items_ordered
+FROM OrderItems
+WHERE order_num = 20005;
+</code></pre>
+
+<h3>Aggregates on Distinct Values</h3>
+<p>The five aggregate functions can all be used in two ways:</p>
+<ul>
+  <li>To perform calculations on all rows, specify the <code>ALL</code> argument or specify no argument at all (because ALL is the default behavior).</li>
+  <li>To only include unique values, specify the <code>DISTINCT</code> argument.</li>
+</ul>
+
+<h4>Caution: No DISTINCT With COUNT(*)</h4>
+<p><code>DISTINCT</code> may only be used with <code>COUNT()</code> if a column name is specified. DISTINCT may not be used with <code>COUNT(*)</code>. Similarly, DISTINCT must be used with a column name and not with a calculation or expression.</p>
+
+<h4>Tip: Using DISTINCT with MIN() and MAX()</h4>
+<p>Although DISTINCT can technically be used with MIN() and MAX(), there is actually no value in doing so. The minimum and maximum values in a column will be the same whether or not only distinct values are included.</p>
+
+<h3>Combining Aggregate Functions</h3>
+<p>All the examples of aggregate function used thus far have involved a single function. But actually, SELECT statements may contain as few or as many aggregate functions as needed. Look at this example:</p>
+
+<h4>Input</h4>
+<pre><code>SELECT COUNT(*) AS num_items,
+       MIN(prod_price) AS price_min,
+       MAX(prod_price) AS price_max,
+       AVG(prod_price) AS price_avg
+FROM Products;
+</code></pre>
+
+<p>Here a single SELECT statement performs four aggregate calculations in one step and returns four values (the number of items in the Products table, and the highest, lowest, and average product prices).</p>
+
+<h4>Caution: Naming Aliases</h4>
+<p>When specifying alias names to contain the results of an aggregate function, try to not use the name of an actual column in the table. Although there is nothing actually illegal about doing so, many SQL implementations do not support this and will generate obscure error messages if you do so.</p>
+
+<h3>Summary</h3>
+<p>Aggregate functions are used to summarize data. SQL supports five aggregate functions, all of which can be used in multiple ways to return just the results you need. These functions are designed to be highly efficient, and they usually return results far more quickly than you could calculate them yourself within your own client application.</p>
+
+
+
+<section>
+  <h2 id="lesson-10">Lesson 10: Grouping Data</h2>
+
+  <h3>Tips</h3>
+  <ul>
+    <li>Use <code>GROUP BY</code> to group rows and perform aggregate functions on those groups.</li>
+    <li>Use <code>HAVING</code> to filter <strong>groups</strong> (after grouping), unlike <code>WHERE</code> which filters <strong>rows</strong> (before grouping).</li>
+    <li>Every column in <code>SELECT</code> that's not an aggregate must be in the <code>GROUP BY</code> clause.</li>
+    <li>Always use <code>ORDER BY</code> if you want sorted results—<code>GROUP BY</code> alone won’t guarantee sorting.</li>
+    <li>Be cautious using aliases in <code>GROUP BY</code>—many DBMSs don’t support it.</li>
+    <li>Microsoft Access doesn't allow <code>ORDER BY</code> aliasing. Use actual calculation or column position instead.</li>
+  </ul>
+
+  <h3>Input</h3>
+  <pre><code>SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+GROUP BY vend_id;
+  </code></pre>
+
+  <h3>Output</h3>
+  <pre>
+vend_id   | num_prods
+---------------------
+BRS01     | 3
+DLL01     | 4
+FNG01     | 2
+  </pre>
+
+  <h3>Analysis</h3>
+  <p>
+    This counts how many products each vendor has.<br>
+    <code>GROUP BY vend_id</code> groups the products table by vendor.<br>
+    <code>COUNT(*)</code> is then calculated <strong>per group</strong>.<br>
+    <code>vend_id</code> is not repeated; the output is <strong>one row per group</strong>.
+  </p>
+
+  <h3>Filtering Groups with HAVING</h3>
+
+  <h4>Example Input</h4>
+  <pre><code>SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+WHERE prod_price >= 4
+GROUP BY vend_id
+HAVING COUNT(*) >= 2;
+  </code></pre>
+
+  <h4>Output</h4>
+  <pre>
+vend_id   | num_prods
+---------------------
+BRS01     | 3
+FNG01     | 2
+  </pre>
+
+  <h4>Analysis</h4>
+  <p>
+    <code>WHERE</code> filters rows with <code>prod_price >= 4</code>.<br>
+    Then <code>GROUP BY</code> groups by vendor.<br>
+    Finally, <code>HAVING</code> filters groups having at least <strong>2</strong> products.
+  </p>
+
+  <h3>GROUP BY vs ORDER BY</h3>
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>GROUP BY</th>
+        <th>ORDER BY</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Purpose</td>
+        <td>Groups rows</td>
+        <td>Sorts the final output</td>
+      </tr>
+      <tr>
+        <td>Column Use</td>
+        <td>Only columns in <code>SELECT</code> or expressions</td>
+        <td>Any columns (even non-selected)</td>
+      </tr>
+      <tr>
+        <td>Required?</td>
+        <td>Required for aggregates</td>
+        <td>Optional</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Final Example with Sorting</h3>
+
+  <h4>Input</h4>
+  <pre><code>SELECT order_num, COUNT(*) AS items
+FROM OrderItems
+GROUP BY order_num
+HAVING COUNT(*) >= 3
+ORDER BY items, order_num;
+  </code></pre>
+
+  <h4>Output</h4>
+  <pre>
+order_num | items
+-----------------
+20006     | 3
+20009     | 3
+20007     | 5
+20008     | 5
+  </pre>
+
+  <h4>Analysis</h4>
+  <p>
+    <code>GROUP BY</code> groups by <code>order_num</code> to count items.<br>
+    <code>HAVING</code> filters orders with 3 or more items.<br>
+    <code>ORDER BY</code> sorts by item count, then order number.
+  </p>
+</section>
+
+
+<section>
+  <h2 id="lesson-11">Lesson 11: Working with Subqueries</h2>
+
+  <p>In this lesson, you’ll learn what subqueries are and how to use them.</p>
+
+  <p>
+    <strong>SELECT</strong> statements are SQL queries. All the SELECT statements we have seen thus far are simple queries:
+    single statements retrieving data from individual database tables.
+  </p>
+
+  <h3>Query</h3>
+  <p><strong>Query:</strong> Any SQL statement. However, the term is usually used to refer to SELECT statements.</p>
+
+  <p>
+    SQL also enables you to create <strong>subqueries</strong>: queries that are embedded into other queries. Why would
+    you want to do this? The best way to understand this concept is to look at a couple of examples.
+  </p>
+
+  <h3>Caution: Single Column Only</h3>
+  <p>
+    Subquery SELECT statements can only retrieve a single column. Attempting to retrieve multiple columns will return an error.
+  </p>
+
+  <h3>Caution: Subqueries and Performance</h3>
+  <p>
+    The code shown here works, and it achieves the desired result. However, using subqueries is not always the most
+    efficient way to perform this type of data retrieval. More on this in Lesson 12, “Joining Tables,” where you will
+    revisit this same example.
+  </p>
+
+  <h3>Summary</h3>
+  <p>
+    In this lesson, you learned what subqueries are and how to use them. The most common uses for subqueries are in
+    WHERE clause IN operators and for populating calculated columns. You saw examples of both of these types of
+    operations.
+  </p>
+</section>
+
+                          
+                          
+  </body>
+  
+</html>
