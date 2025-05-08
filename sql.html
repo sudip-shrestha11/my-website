@@ -41,6 +41,8 @@
       <li><a href="#lesson-10">Lesson 10: Grouping Data</a></li>
       <li><a href="#lesson-11">Lesson 11: Working with Subqueries</a></li>
       <li><a href="#Problem and soultion on Joins">Problem and soultion on Joins</a></li>
+      <li><a href="#Lesson 14: combining queries">Lesson 14: Combining Queries</a></li>
+      <li><a href="#lesson 15:inserting data">lesson 15: Inserting Data</a></li>
     </ul>
   </nav>
   
@@ -1198,8 +1200,174 @@ order_num | items
   <p><hr>
   </div>
 
-                          
-                          
+  <div class="input-analysis" style="font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.2em; color: #2c3e50; margin-bottom: 20px;">
+    Input Analysis: Lesson 14
+  </div>
+
+  <h2 id="Lesson 14: combining queries">COMBINING QUERIES</h2>
+
+  <p>Most SQL queries contain a single <code>SELECT</code> statement that returns data from one or more tables. SQL also enables you to perform multiple queries (multiple <code>SELECT</code> statements) and return the results as a single query result set. These combined queries are usually known as unions or compound queries.</p>
+
+  <p>SQL queries are combined using the <code>UNION</code> operator. Using <code>UNION</code>, multiple <code>SELECT</code> statements can be specified, and their results can be combined into a single result set.</p>
+
+  <h3>UNION Rules</h3>
+
+  <p>As you can see, unions are very easy to use. But there are a few rules governing exactly which can be combined:</p>
+
+  <ul>
+    <li>A <code>UNION</code> must be composed of two or more <code>SELECT</code> statements, each separated by the keyword <code>UNION</code> (so, if combining four <code>SELECT</code> statements there would be three <code>UNION</code> keywords used).</li>
+    <li>Each query in a <code>UNION</code> must contain the same columns, expressions, or aggregate functions (and some DBMSs even require that columns be listed in the same order).</li>
+    <li>Column datatypes must be compatible: They need not be the exact same type, but they must be of a type that the DBMS can implicitly convert (for example, different numeric types or different date types).</li>
+  </ul>
+
+  <h3>Including or Eliminating Duplicate Rows</h3>
+
+  <p>The <code>UNION</code> automatically removes any duplicate rows from the query result. This is the default behavior of <code>UNION</code>, but you can change this if you so desire. If you would, in fact, want all occurrences of all matches returned, you can use <code>UNION ALL</code> instead of <code>UNION</code>.</p>
+
+  <h3>Sorting Combined Query Results</h3>
+
+  <p><code>SELECT</code> statement output is sorted using the <code>ORDER BY</code> clause. When combining queries with a <code>UNION</code> only one <code>ORDER BY</code> clause may be used, and it must occur after the final <code>SELECT</code> statement. There is very little point in sorting part of a result set one way and part another way, and so multiple <code>ORDER BY</code> clauses are not allowed.</p>
+
+  <h3>Summary</h3>
+
+  <p>In this lesson, you learned how to combine <code>SELECT</code> statements with the <code>UNION</code> operator. Using <code>UNION</code>, you can return the results of multiple queries as one combined query, either including or excluding duplicates. The use of <code>UNION</code> can greatly simplify complex <code>WHERE</code> clauses and retrieving data from multiple tables.</p>
+
+  <div class="input-analysis" style="font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.2em; color: #2c3e50; margin-bottom: 20px;">
+    Lesson 15
+  </div>
+
+  <h2 id="lesson 15:inserting data">INSERTING DATA</h2>
+
+  <h3>Understanding Data Insertion</h3>
+
+  <p><code>SELECT</code> is undoubtedly the most frequently used SQL statement (which is why the last 14 lessons were dedicated to it). But there are three other frequently used SQL statements that you should learn. The first one is <code>INSERT</code>. (You’ll get to the other two in the next lesson.)</p>
+
+  <p>As its name suggests, <code>INSERT</code> is used to insert (add) rows to a database table. <code>INSERT</code> can be used in several ways:</p>
+
+  <ul>
+    <li>Inserting a single complete row</li>
+    <li>Inserting a single partial row</li>
+    <li>Inserting the results of a query</li>
+  </ul>
+
+  <h3>Inserting Complete Rows</h3>
+
+  <p>The simplest way to insert data into a table is to use the basic <code>INSERT</code> syntax, which requires that you specify the table name and the values to be inserted into the new row. Here is an example of this:</p>
+
+  <h4>Input</h4>
+  <pre><code>
+INSERT INTO Customers
+VALUES('1000000006',
+       'Toy Land',
+       '123 Any Street',
+       'New York',
+       'NY',
+       '11111',
+       'USA',
+       NULL,
+       NULL);
+  </code></pre>
+
+  <h4>Analysis</h4>
+  <p>This example inserts a new customer into the <code>Customers</code> table. The data to be stored in each table column is specified in the <code>VALUES</code> clause, and a value must be provided for every column. If a column has no value, use <code>NULL</code> (assuming the table allows it). The columns must be populated in the order they appear in the table definition.</p>
+
+  <p>Although simple, this syntax is not safe because it's highly dependent on the column order. Writing SQL that assumes a specific column order is dangerous and should be avoided.</p>
+
+  <p>The safer way is:</p>
+
+  <h4>Input</h4>
+  <pre><code>
+INSERT INTO Customers(cust_id,
+                      cust_name,
+                      cust_address,
+                      cust_city,
+                      cust_state,
+                      cust_zip,
+                      cust_country,
+                      cust_contact,
+                      cust_email)
+VALUES('1000000006',
+       'Toy Land',
+       '123 Any Street',
+       'New York',
+       'NY',
+       '11111',
+       'USA',
+       NULL,
+       NULL);
+  </code></pre>
+
+  <h4>Analysis</h4>
+  <p>This example does the same as the previous one, but explicitly lists the column names. The DBMS matches the values to the columns based on position, not name.</p>
+
+  <h3>Inserting Partial Rows</h3>
+  <p>When using <code>INSERT</code>, it's recommended to specify column names explicitly. This allows you to omit columns you don't want to provide values for.</p>
+
+  <h3>Inserting Retrieved Data</h3>
+  <p><code>INSERT</code> is often used with fixed values, but you can also insert data retrieved from another table using <code>INSERT SELECT</code>. For example:</p>
+
+  <h4>Input</h4>
+  <pre><code>
+INSERT INTO Customers(cust_id,
+                      cust_contact,
+                      cust_email,
+                      cust_name,
+                      cust_address,
+                      cust_city,
+                      cust_state,
+                      cust_zip,
+                      cust_country)
+SELECT cust_id,
+       cust_contact,
+       cust_email,
+       cust_name,
+       cust_address,
+       cust_city,
+       cust_state,
+       cust_zip,
+       cust_country
+FROM CustNew;
+  </code></pre>
+
+  <h4>Tip: Column Names in INSERT SELECT</h4>
+  <p>The column names in <code>INSERT</code> and <code>SELECT</code> don't need to match. The DBMS matches values by position, not name.</p>
+
+  <h4>Analysis</h4>
+  <p>This inserts all rows from <code>CustNew</code> into <code>Customers</code>. If <code>CustNew</code> has rows, they are inserted; if it’s empty, nothing happens.</p>
+
+  <h4>Tip: Inserting Multiple Rows</h4>
+  <p><code>INSERT</code> normally adds one row at a time, unless used with <code>INSERT SELECT</code>, which can insert multiple rows in one go.</p>
+
+  <h3>Copying from One Table to Another</h3>
+  <p>Another method of data insertion uses <code>SELECT INTO</code> to copy data into a new table:</p>
+
+  <h4>Input</h4>
+  <pre><code>
+SELECT *
+INTO CustCopy
+FROM Customers;
+  </code></pre>
+
+  <h4>Analysis</h4>
+  <p>This creates a new table <code>CustCopy</code> and copies all data from <code>Customers</code>. To copy only specific columns, list them instead of using <code>*</code>.</p>
+
+  <p>In MariaDB, MySQL, Oracle, PostgreSQL, and SQLite:</p>
+
+  <h4>Input</h4>
+  <pre><code>
+CREATE TABLE CustCopy AS
+SELECT * FROM Customers;
+  </code></pre>
+
+  <p>Notes on <code>SELECT INTO</code>:</p>
+  <ul>
+    <li>All <code>SELECT</code> options like <code>WHERE</code>, <code>GROUP BY</code> can be used.</li>
+    <li>You can join multiple tables.</li>
+    <li>Only one table can be created with <code>SELECT INTO</code>.</li>
+  </ul>
+
+  <h3>Summary</h3>
+  <p>You learned how to <code>INSERT</code> rows into a table, the benefits of specifying columns explicitly, and how to use <code>INSERT SELECT</code> and <code>SELECT INTO</code> to copy data. The next lesson covers <code>UPDATE</code> and <code>DELETE</code> for modifying data.</p>                      
   </body>
   
 </html>
