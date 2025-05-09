@@ -43,6 +43,10 @@
       <li><a href="#Problem and soultion on Joins">Problem and soultion on Joins</a></li>
       <li><a href="#Lesson 14: combining queries">Lesson 14: Combining Queries</a></li>
       <li><a href="#lesson 15:inserting data">lesson 15: Inserting Data</a></li>
+      <li><a href="#Lesson 16: Updating and Deleting Data">Lesson 16: Updating and Deleting Data</a></li>
+      <li><a href="#Lesson 17: Creating and Manipulating Tables">Lesson 17: Creating and Manipulating Tables"</a></li>
+      
+     
     </ul>
   </nav>
   
@@ -1368,6 +1372,169 @@ SELECT * FROM Customers;
 
   <h3>Summary</h3>
   <p>You learned how to <code>INSERT</code> rows into a table, the benefits of specifying columns explicitly, and how to use <code>INSERT SELECT</code> and <code>SELECT INTO</code> to copy data. The next lesson covers <code>UPDATE</code> and <code>DELETE</code> for modifying data.</p>                      
-  </body>
+  
+  <h1 id = "Lesson 16: Updating and Deleting Data">Lesson 16: Updating and Deleting Data</h1>
+
+  <h2>UPDATE Statement</h2>
+  <p>The <strong>UPDATE</strong> statement is used to modify existing data in a table.</p>
+
+  <h3>Syntax</h3>
+  <pre><code>UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+</code></pre>
+
+  <h3>Example</h3>
+  <pre><code>UPDATE Customers
+SET cust_email = 'kim@thetoystore.com'
+WHERE cust_id = '1000000005';
+</code></pre>
+
+  <h3>Updating Multiple Columns</h3>
+  <pre><code>UPDATE Customers
+SET cust_contact = 'Sam Roberts',
+    cust_email = 'sam@toyland.com'
+WHERE cust_id = '1000000006';
+</code></pre>
+
+  <h3>Setting a Column to NULL</h3>
+  <pre><code>UPDATE Customers
+SET cust_email = NULL
+WHERE cust_id = '1000000005';
+</code></pre>
+
+  <p class="warning">Important: Always use a WHERE clause to avoid updating all rows unintentionally.</p>
+
+  <h2>DELETE Statement</h2>
+  <p>The <strong>DELETE</strong> statement is used to remove rows from a table.</p>
+
+  <h3>Syntax</h3>
+  <pre><code>DELETE FROM table_name
+WHERE condition;
+</code></pre>
+
+  <h3>Example</h3>
+  <pre><code>DELETE FROM Customers
+WHERE cust_id = '1000000006';
+</code></pre>
+
+  <p class="warning">Be careful: Omitting the WHERE clause deletes all rows from the table.</p>
+
+  <h2>TRUNCATE TABLE</h2>
+  <ul>
+    <li>Deletes all rows in a table.</li>
+    <li>Faster than DELETE because it doesn't log individual row deletions.</li>
+    <li>Does not delete the table itself.</li>
+  </ul>
+  <pre><code>TRUNCATE TABLE Customers;
+</code></pre>
+
+  <h2>Guidelines and Best Practices</h2>
+  <ul>
+    <li>Never execute UPDATE or DELETE without a WHERE clause unless you're sure.</li>
+    <li>Ensure every table has a primary key and use it in your WHERE clause.</li>
+    <li>Test your WHERE clause with SELECT first to confirm correct filtering.</li>
+    <li>Use referential integrity to prevent deleting rows that are referenced in other tables.</li>
+    <li>Consider DBMS-level restrictions to prevent unsafe UPDATE or DELETE commands.</li>
+  </ul>
+
+  <div class="note">
+    <strong>Note:</strong> SQL does not have an Undo function. Be very cautious when using UPDATE and DELETE.
+  </div>
+
+
+  <h1 id ="Lesson 17: Creating and Manipulating Tables">Lesson 17: Creating and Manipulating Tables</h1>
+
+  <h2>Creating Tables</h2>
+  <p>There are generally two ways to create database tables:</p>
+  <ul>
+    <li>Using a database administration tool provided by most DBMSs.</li>
+    <li>Using SQL statements directly, such as <code>CREATE TABLE</code>.</li>
+  </ul>
+
+  <h3>Basic <code>CREATE TABLE</code> Syntax</h3>
+  <p>You must specify:</p>
+  <ul>
+    <li>Table name after <code>CREATE TABLE</code>.</li>
+    <li>Column names and definitions separated by commas.</li>
+    <li>Some DBMSs may require the table location.</li>
+  </ul>
+
+  <h3>Example</h3>
+  <pre><code>CREATE TABLE Products (
+  prod_id     CHAR(10),
+  vend_id     CHAR(10),
+  prod_name   CHAR(50),
+  prod_price  DECIMAL(8,2),
+  prod_desc   TEXT
+);</code></pre>
+
+  <div class="note">
+    The table name is placed right after <code>CREATE TABLE</code>, and all columns are defined inside parentheses. Each column is defined with its name and data type.
+  </div>
+
+  <div class="tip">
+    <strong>Tip:</strong> SQL does not allow overwriting existing tables. You must first remove the existing table using <code>DROP TABLE</code> before creating a new one with the same name.
+  </div>
+
+  <h2>Specifying Default Values</h2>
+  <p>Use the <code>DEFAULT</code> keyword in a column definition to set a default value when none is provided during <code>INSERT</code>.</p>
+
+  <h3>Example</h3>
+  <pre><code>CREATE TABLE OrderItems (
+  order_num    INTEGER       NOT NULL,
+  order_item   INTEGER       NOT NULL,
+  prod_id      CHAR(10)      NOT NULL,
+  quantity     INTEGER       NOT NULL DEFAULT 1,
+  item_price   DECIMAL(8,2)  NOT NULL
+);</code></pre>
+
+  <div class="note">
+    In this example, the <code>quantity</code> column has a default value of 1, so if a value is not provided, the DBMS will use 1 by default.
+  </div>
+
+  <h2>Updating Tables</h2>
+  <p>Use <code>ALTER TABLE</code> to update a table definition. Support for specific alterations varies by DBMS.</p>
+
+  <h3>Considerations</h3>
+  <ul>
+    <li>Ideally, avoid altering tables that already contain data.</li>
+    <li>Most DBMSs support adding columns, but may restrict the datatypes or default values.</li>
+    <li>Many do not allow removing or changing columns.</li>
+    <li>Renaming columns is supported by most DBMSs.</li>
+    <li>Fewer restrictions apply to unpopulated columns.</li>
+  </ul>
+
+  <h3>Example: Adding a Column</h3>
+  <pre><code>ALTER TABLE Vendors
+ADD vend_phone CHAR(20);</code></pre>
+
+  <div class="caution">
+    <strong>Caution:</strong> Always back up your schema and data before using <code>ALTER TABLE</code>. Mistakes may be irreversible.
+  </div>
+
+  <h2>Deleting Tables</h2>
+  <p>To remove an entire table, use <code>DROP TABLE</code>.</p>
+
+  <h3>Example</h3>
+  <pre><code>DROP TABLE CustCopy;</code></pre>
+
+  <div class="caution">
+    Deleting a table permanently removes its structure and data. Proceed carefully.
+  </div>
+
+  <h2>Summary</h2>
+  <p>This lesson covered how to:</p>
+  <ul>
+    <li>Use <code>CREATE TABLE</code> to define new tables.</li>
+    <li>Use <code>ALTER TABLE</code> to modify table definitions.</li>
+    <li>Use <code>DROP TABLE</code> to delete tables.</li>
+  </ul>
+  <p>Always consult your specific DBMS documentation, as syntax and supported features may vary.</p>
+
+
+
+
+</body>
   
 </html>
