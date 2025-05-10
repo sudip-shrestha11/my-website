@@ -44,7 +44,13 @@
       <li><a href="#Lesson 14: combining queries">Lesson 14: Combining Queries</a></li>
       <li><a href="#lesson 15:inserting data">lesson 15: Inserting Data</a></li>
       <li><a href="#Lesson 16: Updating and Deleting Data">Lesson 16: Updating and Deleting Data</a></li>
-      <li><a href="#Lesson 17: Creating and Manipulating Tables">Lesson 17: Creating and Manipulating Tables"</a></li>
+      <li><a href="#Lesson 17: Creating and Manipulating Tables">Lesson 17: Creating and Manipulating Tables</a></li>
+      <li><a href="#Understanding Views">Lesson 18: Understanding Views</a></li>
+      <li><a href="#lesson19">Lesson 19: Using Stored Procedures<a></li>
+      <li><a href="#lesson20">Lesson 20: cursors<a></li> 
+    
+
+      Understanding Views
       
      
     </ul>
@@ -1531,6 +1537,189 @@ ADD vend_phone CHAR(20);</code></pre>
     <li>Use <code>DROP TABLE</code> to delete tables.</li>
   </ul>
   <p>Always consult your specific DBMS documentation, as syntax and supported features may vary.</p>
+
+  <h3 id="Understanding Views">Understanding Views</h3>
+  <p>Views are virtual tables that dynamically retrieve data using stored queries.</p>
+
+  <h3>Why Use Views</h3>
+  <ul>
+    <li>Reuse SQL statements</li>
+    <li>Simplify complex queries</li>
+    <li>Restrict access to table subsets</li>
+    <li>Secure data</li>
+    <li>Change data formatting</li>
+  </ul>
+
+  <h3>View Rules and Restrictions</h3>
+  <ul>
+    <li>Must have unique names</li>
+    <li>Unlimited number can be created</li>
+    <li>Require appropriate security access</li>
+    <li>Can be nested (check DBMS limits)</li>
+    <li>ORDER BY often not allowed in views</li>
+    <li>Aliases may be required for calculated fields</li>
+    <li>Cannot have indexes, triggers, or defaults</li>
+    <li>Often read-only (depends on DBMS)</li>
+  </ul>
+
+  <h3>Creating Views</h3>
+
+  <h4>Example: Simplify Complex Joins</h4>
+  <pre><code>CREATE VIEW ProductCustomers AS
+SELECT cust_name, cust_contact, prod_id
+FROM Customers, Orders, OrderItems
+WHERE Customers.cust_id = Orders.cust_id
+AND OrderItems.order_num = Orders.order_num;</code></pre>
+
+  <pre><code>SELECT cust_name, cust_contact
+FROM ProductCustomers
+WHERE prod_id = 'RGAN01';</code></pre>
+
+  <h4>Example: Reformat Retrieved Data</h4>
+  <pre><code>CREATE VIEW VendorLocations AS
+SELECT RTRIM(vend_name) || ' (' || RTRIM(vend_country) || ')'
+AS vend_title
+FROM Vendors;</code></pre>
+
+  <pre><code>SELECT * FROM VendorLocations;</code></pre>
+
+
+
+  <!-- Lesson 19: Stored Procedures -->
+  <section id="lesson19">
+    <h2>Lesson 19: Using Stored Procedures</h2>
+
+    <h3>What are Stored Procedures?</h3>
+    <p>
+      A <strong>stored procedure</strong> is a saved block of SQL code that performs a specific task.
+      It is stored in the database and can be executed (called) multiple times without rewriting SQL.
+    </p>
+
+    <h3>Advantages of Stored Procedures</h3>
+    <ul>
+      <li>Improves performance by reducing parsing and compilation</li>
+      <li>Promotes code reuse and modularity</li>
+      <li>Enhances security by controlling access to data</li>
+      <li>Can include complex business logic</li>
+      <li>Helps centralize SQL code and improve maintainability</li>
+    </ul>
+
+    <h3>Creating Stored Procedures</h3>
+    <pre><code>DELIMITER $$
+
+CREATE PROCEDURE GetCustomerEmailList()
+BEGIN
+  SELECT cust_name, cust_email
+  FROM Customers
+  WHERE cust_email IS NOT NULL;
+END$$
+
+DELIMITER ;</code></pre>
+
+    <p>
+      This procedure, <code>GetCustomerEmailList</code>, returns all customers with non-null email addresses.
+    </p>
+
+    <h3>Calling Stored Procedures</h3>
+    <pre><code>CALL GetCustomerEmailList();</code></pre>
+
+    <h3>Using Parameters</h3>
+    <pre><code>CREATE PROCEDURE GetOrdersByCustomer(IN cust_id_param CHAR(10))
+BEGIN
+  SELECT order_num, order_date
+  FROM Orders
+  WHERE cust_id = cust_id_param;
+END;</code></pre>
+
+    <p>
+      This version of the procedure accepts a customer ID as input and returns their orders.
+    </p>
+
+    <pre><code>CALL GetOrdersByCustomer('1001');</code></pre>
+
+    <h3>Summary</h3>
+    <ul>
+      <li>Stored procedures encapsulate SQL logic</li>
+      <li>Support input/output parameters</li>
+      <li>Can simplify repetitive database tasks</li>
+    </ul>
+  </section>
+
+  <hr />
+
+  <!-- Lesson 20: Using Cursors -->
+  <section id="lesson20">
+    <h2>Lesson 20: Using Cursors</h2>
+
+    <h3>What is a Cursor?</h3>
+    <p>
+      A <strong>cursor</strong> is a database object used to retrieve a set of rows and process them one at a time.
+      Cursors are useful in stored procedures and functions when row-by-row processing is required.
+    </p>
+
+    <h3>When to Use Cursors</h3>
+    <ul>
+      <li>When set-based operations (standard SQL queries) are not sufficient</li>
+      <li>When you need to perform complex operations on each row</li>
+    </ul>
+
+    <h3>Types of Cursors</h3>
+    <ul>
+      <li><strong>Implicit Cursor:</strong> Automatically created by SQL statements like SELECT INTO</li>
+      <li><strong>Explicit Cursor:</strong> Declared and managed manually</li>
+    </ul>
+
+    <h3>Steps to Use an Explicit Cursor</h3>
+    <ol>
+      <li>Declare the cursor</li>
+      <li>Open the cursor</li>
+      <li>Fetch rows from the cursor</li>
+      <li>Close the cursor</li>
+    </ol>
+
+    <h3>Cursor Example</h3>
+    <pre><code>DELIMITER $$
+
+CREATE PROCEDURE ListProductNames()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE prod_name_val VARCHAR(100);
+  DECLARE prod_cursor CURSOR FOR SELECT prod_name FROM Products;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN prod_cursor;
+
+  read_loop: LOOP
+    FETCH prod_cursor INTO prod_name_val;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+    SELECT prod_name_val;
+  END LOOP;
+
+  CLOSE prod_cursor;
+END$$
+
+DELIMITER ;</code></pre>
+
+    <p>
+      This procedure opens a cursor to read all product names one-by-one and prints each name.
+    </p>
+
+    <h3>Important Notes</h3>
+    <ul>
+      <li>Always use a <code>HANDLER</code> to manage end-of-data conditions</li>
+      <li>Make sure to close cursors to free resources</li>
+    </ul>
+
+    <h3>Summary</h3>
+    <ul>
+      <li>Cursors are used for row-wise processing</li>
+      <li>Explicit cursors give full control over reading a result set</li>
+      <li>Use loops and handlers for safe and complete cursor logic</li>
+    </ul>
+  </section>
+
 
 
 
